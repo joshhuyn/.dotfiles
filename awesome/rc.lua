@@ -341,7 +341,10 @@ globalkeys = gears.table.join(
 
     awful.key({}, "XF86AudioPlay", function () os.execute("playerctl play-pause") end),
     awful.key({}, "XF86AudioNext", function () os.execute("playerctl next") end),
-    awful.key({}, "XF86AudioPrev", function () os.execute("playerctl prev") end)
+    awful.key({}, "XF86AudioPrev", function () os.execute("playerctl prev") end),
+
+    awful.key({}, "XF86MonBrightnessUp", function() os.execute("brightnessctl set 10%+") end),
+    awful.key({}, "XF86MonBrightnessDown", function() os.execute("brightnessctl set 10%-") end)
 
     -- awful.key({}, "XF86AudioPlay", function () awful.util.spawn("mpc toggle") end),
     -- awful.key({}, "XF86AudioNext", function () awful.util.spawn("mpc next") end),
