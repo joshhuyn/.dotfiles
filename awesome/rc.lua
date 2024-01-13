@@ -373,7 +373,7 @@ globalkeys = mytable.join(
     awful.key({}, "XF86MonBrightnessUp", function() os.execute("brightnessctl set 10%+") end),
     awful.key({}, "XF86MonBrightnessDown", function() os.execute("brightnessctl set 10%-") end),
 
-    awful.key({ "Control" }, "Tab", function() os.execute("rofi -show window") end),
+    awful.key({ altkey }, "Tab", function() os.execute("rofi -show window") end),
 
     awful.key({ altkey }, "m",
         function ()
