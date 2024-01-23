@@ -6,12 +6,23 @@
 lvim.plugins =
 {
   {
+    "mfussenegger/nvim-jdtls",
+  },
+  {
     'ofirgall/ofirkai.nvim'
   },
   {
     'tanvirtin/monokai.nvim'
   }
 }
+
+-- java lsp see: https://medium.com/@chrisatmachine/lunarvim-as-a-java-ide-da65c4a77fb4
+
+vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, {"jdtls"})
+
+lvim.builtin.treesitter.ensure_installed = { "java", }
+
+-- java lsp end
 
 lvim.colorscheme = "ofirkai-darkblue"
 
