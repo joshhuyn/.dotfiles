@@ -1,0 +1,5 @@
+neovim-bin = "/home/josh/.local/bin/lvim"
+
+[font]
+normal = ["Hack"]
+size = 10
