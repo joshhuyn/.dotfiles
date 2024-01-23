@@ -15,8 +15,8 @@ local os = os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
-theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/powerarrow-dark"
-theme.wallpaper                                 = theme.dir .. "/owl.png"
+theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/custom"
+theme.wallpaper                                 = theme.dir .. "/minimalist-mountain-wallpapers.jpg"
 theme.font                                      = "Terminus 9"
 theme.fg_normal                                 = "#DDDDFF"
 theme.fg_focus                                  = "#EA6F81"
@@ -301,7 +301,7 @@ function theme.at_screen_connect(s)
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
 
-    local wiboxSize = 32
+    local wiboxSize = 25
 
     local widgetDirection = "north"
     local wiboxPos = "top"
