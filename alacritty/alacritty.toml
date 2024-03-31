@@ -1,0 +1,4 @@
+import = ["/home/josh/.config/alacritty/themes/themes/hyper.yaml"]
+
+[font]
+size = 12.0
