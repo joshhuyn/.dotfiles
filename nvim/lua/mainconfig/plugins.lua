@@ -49,6 +49,11 @@ return require('packer').startup(function(use)
 
     use 'mfussenegger/nvim-jdtls'
 
+    use {
+        "folke/trouble.nvim",
+        requires = { "nvim-tree/nvim-web-devicons" },
+    }
+
     -- movement
 
     use "nvim-lua/plenary.nvim" -- don't forget to add this one if you don't have it yet!
@@ -60,7 +65,7 @@ return require('packer').startup(function(use)
     }
 
     use {
-        'nvim-telescope/telescope.nvim', tag = '0.1.0',
+        'nvim-telescope/telescope.nvim', tag = '0.1.6',
         -- or                            , branch = '0.1.x',
         requires = { {'nvim-lua/plenary.nvim'} }
     }
@@ -68,6 +73,8 @@ return require('packer').startup(function(use)
     use {"akinsho/toggleterm.nvim", tag = '*', config = function()
         require("toggleterm").setup()
     end}
+
+    use 'm4xshen/autoclose.nvim'
 
     -- style
     use 'folke/zen-mode.nvim'
