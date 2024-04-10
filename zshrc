@@ -110,12 +110,12 @@ fi
 
 # alias tmux="tmux new -As0"
 
-export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
+# export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 
 export PATH=$PATH:/home/josh/.local/bin
 
 chuck_cow
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+# export SDKMAN_DIR="$HOME/.sdkman"
+# [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
