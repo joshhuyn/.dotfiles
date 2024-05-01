@@ -2,10 +2,6 @@ local lsp = require("lsp-zero")
 
 lsp.preset("recommended")
 
-lsp.ensure_installed({
-    'jdtls',
-})
-
 -- Fix Undefined global 'vim'
 lsp.configure('lua-language-server', {
 	settings = {
@@ -27,7 +23,7 @@ local cmp_select = {behavior = cmp.SelectBehavior.Select}
 local cmp_mappings = lsp.defaults.cmp_mappings({
 	['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
 	['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
-	['<C-y>'] = cmp.mapping.confirm({ select = true }),
+	['<C-Enter>'] = cmp.mapping.confirm({ select = true }),
 	["<C-Space>"] = cmp.mapping.complete(),
 })
 
@@ -39,7 +35,7 @@ lsp.setup_nvim_cmp({
 })
 
 lsp.set_preferences({
-	suggest_lsp_servers = false,
+	suggest_lsp_servers = true,
 	sign_icons = {
 		error = 'E',
 		warn = 'W',
