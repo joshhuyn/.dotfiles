@@ -10,14 +10,15 @@ local lain  = require("lain")
 local awful = require("awful")
 local wibox = require("wibox")
 local dpi   = require("beautiful.xresources").apply_dpi
+local beautiful = require("beautiful")
 
 local os = os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/custom"
-theme.wallpaper                                 = theme.dir .. "/eclipse.jpg"
-theme.font                                      = "Terminus 9"
+theme.wallpaper                                 = theme.dir .. "/minimalist-mountain-wallpapers_v2.png"
+theme.font                                      = "Terminus 12"
 theme.fg_normal                                 = "#DDDDFF"
 theme.fg_focus                                  = "#EA6F81"
 theme.fg_urgent                                 = "#CC9393"
@@ -112,98 +113,6 @@ theme.cal = lain.widget.cal({
     }
 })
 
--- Mail IMAP check
-local mailicon = wibox.widget.imagebox(theme.widget_mail)
---[[ commented because it needs to be set before use
-mailicon:buttons(my_table.join(awful.button({ }, 1, function () awful.spawn(mail) end)))
-theme.mail = lain.widget.imap({
-    timeout  = 180,
-    server   = "server",
-    mail     = "mail",
-    password = "keyring get mail",
-    settings = function()
-        if mailcount > 0 then
-            widget:set_markup(markup.font(theme.font, " " .. mailcount .. " "))
-            mailicon:set_image(theme.widget_mail_on)
-        else
-            widget:set_text("")
-            mailicon:set_image(theme.widget_mail)
-        end
-    end
-})
---]]
-
--- MPD
-local musicplr = awful.util.terminal .. " -title Music -e ncmpcpp"
-local mpdicon = wibox.widget.imagebox(theme.widget_music)
-mpdicon:buttons(my_table.join(
-    awful.button({ "Mod4" }, 1, function () awful.spawn(musicplr) end),
-    awful.button({ }, 1, function ()
-        os.execute("mpc prev")
-        theme.mpd.update()
-    end),
-    awful.button({ }, 2, function ()
-        os.execute("mpc toggle")
-        theme.mpd.update()
-    end),
-    awful.button({ }, 3, function ()
-        os.execute("mpc next")
-        theme.mpd.update()
-    end)))
-theme.mpd = lain.widget.mpd({
-    settings = function()
-        if mpd_now.state == "play" then
-            artist = " " .. mpd_now.artist .. " "
-            title  = mpd_now.title  .. " "
-            mpdicon:set_image(theme.widget_music_on)
-        elseif mpd_now.state == "pause" then
-            artist = " mpd "
-            title  = "paused "
-        else
-            artist = ""
-            title  = ""
-            mpdicon:set_image(theme.widget_music)
-        end
-
-        widget:set_markup(markup.font(theme.font, markup("#EA6F81", artist) .. title))
-    end
-})
-
--- MEM
-local memicon = wibox.widget.imagebox(theme.widget_mem)
-local mem = lain.widget.mem({
-    settings = function()
-        widget:set_markup(markup.font(theme.font, " " .. mem_now.used .. "MB "))
-    end
-})
-
--- CPU
-local cpuicon = wibox.widget.imagebox(theme.widget_cpu)
-local cpu = lain.widget.cpu({
-    settings = function()
-        widget:set_markup(markup.font(theme.font, " " .. cpu_now.usage .. "% "))
-    end
-})
-
--- Coretemp
-local tempicon = wibox.widget.imagebox(theme.widget_temp)
-local temp = lain.widget.temp({
-    settings = function()
-        widget:set_markup(markup.font(theme.font, " " .. coretemp_now .. "°C "))
-    end
-})
-
--- / fs
-local fsicon = wibox.widget.imagebox(theme.widget_hdd)
---[[ commented because it needs Gio/Glib >= 2.54
-theme.fs = lain.widget.fs({
-    notification_preset = { fg = theme.fg_normal, bg = theme.bg_normal, font = "Terminus 10" },
-    settings = function()
-        widget:set_markup(markup.font(theme.font, " " .. fs_now["/"].percentage .. "% "))
-    end
-})
---]]
-
 -- Battery
 local baticon = wibox.widget.imagebox(theme.widget_battery)
 local bat = lain.widget.bat({
@@ -254,21 +163,6 @@ theme.volume.widget:buttons(awful.util.table.join(
                                end)
 ))
 
--- Net
-local neticon = wibox.widget.imagebox(theme.widget_net)
-local net = lain.widget.net({
-    settings = function()
-        widget:set_markup(markup.font(theme.font,
-                          markup("#7AC82E", " " .. string.format("%06.1f", net_now.received))
-                          .. " " ..
-                          markup("#46A8C3", " " .. string.format("%06.1f", net_now.sent) .. " ")))
-    end
-})
-
--- Separators
-local spr     = wibox.widget.textbox(' ')
-local arrl_dl = separators.arrow_left(theme.bg_focus, "alpha")
-local arrl_ld = separators.arrow_left("alpha", theme.bg_focus)
 
 function theme.at_screen_connect(s)
     -- Quake application
@@ -301,108 +195,117 @@ function theme.at_screen_connect(s)
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
 
-    local wiboxSize = 25
+    local wibarScreenMargin = 5
+    local wibarHeight = beautiful.get_font_height(nil) * 1.5
 
-    local widgetDirection = "north"
-    local wiboxPos = "top"
-    local wiboxWidth = nil
-    local wiboxHeight = dpi(wiboxSize)
+    s.barRight = wibox({
+        screen = s,
+        width = 250,
+        height = wibarHeight,
+    })
 
-    if s.index == 1 then
-        widgetDirection = "east"
-        wiboxPos = "left"
-        wiboxWidth = dpi(wiboxSize)
-        wiboxHeight = nil
-    end
 
-    -- Create the wibox
-    s.mywibox = awful.wibar({ position = wiboxPos, screen = s, height = wiboxHeight, width = wiboxWidth, bg = theme.bg_normal, fg = theme.fg_normal })
-
-    local left_layout = {
+    s.barRight:setup ({
         {
-            layout = wibox.layout.fixed.horizontal,
-            --spr,
-            s.mytaglist,
-            s.mypromptbox,
-            spr,
-        },
-        direction = widgetDirection,
-        widget = wibox.container.rotate,
-    }
-
-    local middle_layout = {
-        s.mytasklist, -- Middle widget
-        direction = widgetDirection,
-        widget = wibox.container.rotate,
-    }
-
-    local right_layout = {
-        { -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
-            wibox.widget.systray(),
-            keyboardlayout,
-            spr,
-            arrl_ld,
-            wibox.container.background(mpdicon, theme.bg_focus),
-            wibox.container.background(theme.mpd.widget, theme.bg_focus),
-            arrl_dl,
-            volicon,
-            theme.volume.widget,
-            arrl_ld,
-            wibox.container.background(mailicon, theme.bg_focus),
-            --wibox.container.background(theme.mail.widget, theme.bg_focus),
-            arrl_dl,
-            memicon,
-            mem.widget,
-            arrl_ld,
-            wibox.container.background(cpuicon, theme.bg_focus),
-            wibox.container.background(cpu.widget, theme.bg_focus),
-            arrl_dl,
-            tempicon,
-            temp.widget,
-            arrl_ld,
-            wibox.container.background(fsicon, theme.bg_focus),
-            --wibox.container.background(theme.fs.widget, theme.bg_focus),
-            arrl_dl,
-            baticon,
-            bat.widget,
-            arrl_ld,
-            wibox.container.background(neticon, theme.bg_focus),
-            wibox.container.background(net.widget, theme.bg_focus),
-            arrl_dl,
+            layout = wibox.layout.align.horizontal,
+            {
+                layout = wibox.layout.fixed.horizontal,
+                keyboardlayout,
+                wibox.widget.systray(),
+                baticon,
+                bat.widget,
+            },
             clock,
-            spr,
-            arrl_ld,
-            wibox.container.background(s.mylayoutbox, theme.bg_focus),
+            {
+                layout = wibox.layout.fixed.horizontal,
+                s.mylayoutbox,
+            }
         },
-        direction = widgetDirection,
-        widget = wibox.container.rotate,
-    }
+        top = 4,
+        bottom = 4,
+        widget = wibox.container.margin
+    })
 
-    local layoutAlign = wibox.layout.align.horizontal
+    s.barRight.x = s.geometry.x + s.geometry.width - s.barRight.width - wibarScreenMargin
+    s.barRight.y = s.geometry.y + s.geometry.height - s.barRight.height - wibarScreenMargin
+    s.barRight.ontop = true
+    s.barRight.visible = true
 
-    if widgetDirection == "east" or widgetDirection == "west" then
-        layoutAlign = wibox.layout.align.vertical
+    s.barLeft = wibox({
+        screen = s,
+        width = 90,
+        height = wibarHeight
+    })
+
+    s.barLeft:setup ({
+        {
+            layout = wibox.layout.align.horizontal,
+            s.mytaglist,
+        },
+        top = 4,
+        bottom = 4,
+        widget = wibox.container.margin
+    })
+
+    s.barLeft.x = s.geometry.x + wibarScreenMargin
+    s.barLeft.y = s.geometry.y + s.geometry.height - s.barLeft.height - wibarScreenMargin
+    s.barLeft.ontop = true
+    s.barLeft.visible = true
+
+
+    s.barMiddle = wibox({
+        screen = s,
+        width = 700,
+        height = wibarHeight
+    })
+
+    s.barMiddle:setup ({
+        {
+            layout = wibox.layout.align.horizontal,
+            s.mytasklist
+        },
+        top = 4,
+        bottom = 4,
+        widget = wibox.container.margin
+    })
+
+    s.barMiddle.x = s.geometry.x + s.geometry.width / 2 - s.barMiddle.width / 2
+    s.barMiddle.y = s.geometry.y + s.geometry.height - s.barMiddle.height - wibarScreenMargin
+    s.barMiddle.ontop = true
+    s.barMiddle.visible = true
+
+    s.barMiddleTop = wibox({
+        screen = s,
+        width = 300,
+        height = wibarHeight
+    })
+
+    s.barMiddleTop:setup ({
+        {
+            layout = wibox.layout.align.horizontal,
+            s.disappearingPrompt
+        },
+        top = 4,
+        bottom = 4,
+        widget = wibox.container.margin
+    })
+
+    s.barMiddleTop.x = s.geometry.x + s.geometry.width / 2 - s.barMiddleTop.width / 2
+    s.barMiddleTop.y = s.geometry.y + s.geometry.height / 2
+    s.barMiddleTop.ontop = true
+    s.barMiddleTop.visible = true
+    s.barMiddleTop.opacity = 0
+
+    local new_shape = function(cr, width, height)
+        gears.shape.partially_rounded_rect(cr, width, height)
     end
 
-    local layoutAll = {
-        layout = layoutAlign,
-        left_layout,
-        middle_layout,
-        right_layout,
-    }
+    s.barMiddleTop.shape = new_shape
 
-    if widgetDirection == "east" then
-        layoutAll = {
-            layout = layoutAlign,
-            right_layout,
-            middle_layout,
-            left_layout,
-        }
-    end
-
-    -- Add widgets to the wibox
-    s.mywibox:setup (layoutAll)
+    s.barLeft.input_passthrough = true
+    s.barMiddle.input_passthrough = true
+    s.barRight.input_passthrough = true
+    s.barMiddleTop.input_passthrough = true
 end
 
 return theme
