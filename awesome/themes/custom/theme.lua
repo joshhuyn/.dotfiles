@@ -26,9 +26,9 @@ theme.bg_normal                                 = "#1A1A1A"
 theme.bg_focus                                  = "#313131"
 theme.bg_urgent                                 = "#1A1A1A"
 theme.border_width                              = dpi(1)
-theme.border_normal                             = "#3F3F3F"
-theme.border_focus                              = "#7F7F7F"
-theme.border_marked                             = "#CC9393"
+theme.border_normal                             = "#0"
+theme.border_focus                              = "#3F3F3F"
+theme.border_marked                             = "#0"
 theme.tasklist_bg_focus                         = "#1A1A1A"
 theme.titlebar_bg_focus                         = theme.bg_focus
 theme.titlebar_bg_normal                        = theme.bg_normal
@@ -221,8 +221,6 @@ function theme.at_screen_connect(s)
                 s.mylayoutbox,
             }
         },
-        top = 4,
-        bottom = 4,
         widget = wibox.container.margin
     })
 
@@ -255,8 +253,8 @@ function theme.at_screen_connect(s)
 
     s.barMiddle = wibox({
         screen = s,
-        width = 700,
-        height = wibarHeight
+        width = s.geometry.width / 3,
+        height = wibarHeight,
     })
 
     s.barMiddle:setup ({
@@ -277,7 +275,7 @@ function theme.at_screen_connect(s)
     s.barMiddleTop = wibox({
         screen = s,
         width = 300,
-        height = wibarHeight
+        height = wibarHeight,
     })
 
     s.barMiddleTop:setup ({
@@ -287,20 +285,12 @@ function theme.at_screen_connect(s)
         },
         top = 4,
         bottom = 4,
-        widget = wibox.container.margin
+        widget = wibox.container.margin,
     })
 
     s.barMiddleTop.x = s.geometry.x + s.geometry.width / 2 - s.barMiddleTop.width / 2
     s.barMiddleTop.y = s.geometry.y + s.geometry.height / 2
     s.barMiddleTop.ontop = true
-    s.barMiddleTop.visible = true
-    s.barMiddleTop.opacity = 0
-
-    local new_shape = function(cr, width, height)
-        gears.shape.partially_rounded_rect(cr, width, height)
-    end
-
-    s.barMiddleTop.shape = new_shape
 
     s.barLeft.input_passthrough = true
     s.barMiddle.input_passthrough = true

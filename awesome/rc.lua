@@ -43,7 +43,7 @@ for s in screen do
         prompt = "Run: ",
         done_callback = function(result)
             naughty.notify(tostring(result))
-            awful.screen.focused().barMiddleTop.opacity = 0
+            awful.screen.focused().barMiddleTop.visible = false
         end
     }
 end
@@ -299,7 +299,7 @@ globalkeys = mytable.join(
 
     -- Prompt
     awful.key({ modkey },            "r",     function () 
-        awful.screen.focused().barMiddleTop.opacity = 1
+        awful.screen.focused().barMiddleTop.visible = true
 
         --awful.screen.focused().mypromptbox:run()
         awful.screen.focused().disappearingPrompt:run()
@@ -308,17 +308,23 @@ globalkeys = mytable.join(
 
     awful.key({ modkey },           "e",    function()
         for s in screen do
-            local opacity = 1
+            local visible = true
             local input_passthrough = false
 
-            if (s.barLeft.opacity == 1) then
-                opacity = 0
+            local margin_bottom = s.barMiddle.height + beautiful.useless_gap
+
+
+            if (s.barLeft.visible) then
+                margin_bottom = 0
+                visible = false
                 input_passthrough = true
             end
 
-            s.barLeft.opacity = opacity
-            s.barMiddle.opacity = opacity
-            s.barRight.opacity = opacity
+            s.barMiddle:struts ({top = 0, bottom = margin_bottom, left = 0, right = 0})
+
+            s.barLeft.visible = visible
+            s.barMiddle.visible = visible
+            s.barRight.visible = visible
 
             s.barMiddle.input_passthrough = input_passthrough
             s.barLeft.input_passthrough = input_passthrough
@@ -328,7 +334,7 @@ globalkeys = mytable.join(
 
     awful.key({ modkey }, "x",
         function ()
-            awful.screen.focused().barMiddleTop.opacity = 1
+            awful.screen.focused().barMiddleTop.visible = true
             awful.prompt.run {
                 prompt       = "Run Lua code: ",
                 textbox      = awful.screen.focused().disappearingPrompt.widget,
@@ -336,7 +342,7 @@ globalkeys = mytable.join(
                 history_path = awful.util.get_cache_dir() .. "/history_eval",
                 done_callback = function (result)
                     naughty.notify(tostring(result))
-                    awful.screen.focused().barMiddleTop.opacity = 0
+                    awful.screen.focused().barMiddleTop.visible = false
                 end
             }
         end,
@@ -639,8 +645,13 @@ end)
 --     c:emit_signal("request::activate", "mouse_enter", {raise = vi_focus})
 -- end)
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+client.connect_signal("focus", function(c) 
+    c.border_width = beautiful.border_width
+    c.border_color = beautiful.border_focus 
+end)
+client.connect_signal("unfocus", function(c)
+    c.border_color = beautiful.border_normal
+end)
 
 -- switch to parent after closing child window
 local function backham()
