@@ -16,6 +16,7 @@ local os = os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
+theme.icon_theme                                = "Adwaita"
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/custom"
 theme.wallpaper                                 = theme.dir .. "/minimalist-mountain-wallpapers_v2.png"
 theme.font                                      = "Terminus 12"
@@ -27,7 +28,7 @@ theme.bg_focus                                  = "#313131"
 theme.bg_urgent                                 = "#1A1A1A"
 theme.border_width                              = dpi(1)
 theme.border_normal                             = "#0"
-theme.border_focus                              = "#3F3F3F"
+theme.border_focus                              = "#33F5FF"
 theme.border_marked                             = "#0"
 theme.tasklist_bg_focus                         = "#1A1A1A"
 theme.titlebar_bg_focus                         = theme.bg_focus
@@ -67,9 +68,9 @@ theme.widget_vol_no                             = theme.dir .. "/icons/vol_no.pn
 theme.widget_vol_mute                           = theme.dir .. "/icons/vol_mute.png"
 theme.widget_mail                               = theme.dir .. "/icons/mail.png"
 theme.widget_mail_on                            = theme.dir .. "/icons/mail_on.png"
-theme.tasklist_plain_task_name                  = true
-theme.tasklist_disable_icon                     = true
-theme.useless_gap                               = dpi(0)
+theme.tasklist_plain_task_name                  = false
+theme.tasklist_disable_icon                     = false
+theme.useless_gap                               = dpi(2)
 theme.titlebar_close_button_focus               = theme.dir .. "/icons/titlebar/close_focus.png"
 theme.titlebar_close_button_normal              = theme.dir .. "/icons/titlebar/close_normal.png"
 theme.titlebar_ontop_button_focus_active        = theme.dir .. "/icons/titlebar/ontop_focus_active.png"
@@ -193,7 +194,57 @@ function theme.at_screen_connect(s)
     s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, awful.util.taglist_buttons)
 
     -- Create a tasklist widget
-    s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
+    s.mytasklist = awful.widget.tasklist {
+        screen = s,
+        filter = awful.widget.tasklist.filter.currenttags,
+        buttons = awful.util.tasklist_buttons,
+        style = {
+            shape_border_width = 1,
+            shape_border_color = "#777777",
+            shape = gears.shape.rounded_bar,
+        },
+        layout = {
+            spacing_widget = {
+                {
+                    forces_width = 5,
+                    forces_height = 24,
+                    thickness = 1,
+                    color = "#777777",
+                    widget = wibox.widget.separator
+                },
+                valign = "center",
+                halign = "center",
+                widget = wibox.container.place,
+            },
+            spacing = 1,
+            layout = wibox.layout.fixed.horizontal,
+        },
+        widget_template = {
+            {
+                wibox.widget.base.make_widget(),
+                forced_height = 5,
+                id = "background_role",
+                widget = wibox.container.background,
+            },
+            {
+                {
+                    id = "clienticon",
+                    widget = awful.widget.clienticon,
+                },
+                margins = 5,
+                widget = wibox.container.margin,
+            },
+            nil,
+            create_fallback = function(self, c, index, objects)
+                local temp = self:get_children_by_id("clienticon")
+
+                if temp ~= nil then
+                    temp[1].client = c
+                end
+            end,
+            layout = wibox.layout.align.vertical,
+        },
+    }
 
     local wibarScreenMargin = 5
     local wibarHeight = beautiful.get_font_height(nil) * 1.5

@@ -195,12 +195,12 @@ screen.connect_signal("property::geometry", function(s)
 end)
 
 -- No borders when rearranging only 1 non-floating or maximized client
-screen.connect_signal("arrange", function (s)
-    local only_one = #s.tiled_clients == 1
-    for _, c in pairs(s.clients) do
-        c.border_width = 0
-    end
-end)
+-- screen.connect_signal("arrange", function (s)
+    -- local only_one = #s.tiled_clients == 1
+    -- for _, c in pairs(s.clients) do
+        -- c.border_width = 0
+    -- end
+-- end)
 
 -- Create a wibox for each screen and add it
 awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) end)
@@ -245,9 +245,9 @@ globalkeys = mytable.join(
               {description = "swap with next client by index", group = "client"}),
     awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end,
               {description = "swap with previous client by index", group = "client"}),
-    awful.key({ modkey, "Control" }, "l", function () awful.screen.focus_relative( 1) end,
+    awful.key({ modkey, "Control" }, "l", function () awful.screen.focus_relative(-1) end,
               {description = "focus the next screen", group = "screen"}),
-    awful.key({ modkey, "Control" }, "h", function () awful.screen.focus_relative(-1) end,
+    awful.key({ modkey, "Control" }, "h", function () awful.screen.focus_relative( 1) end,
               {description = "focus the previous screen", group = "screen"}),
     awful.key({ modkey,           }, "u", awful.client.urgent.jumpto,
               {description = "jump to urgent client", group = "client"}),
@@ -645,12 +645,21 @@ end)
 --     c:emit_signal("request::activate", "mouse_enter", {raise = vi_focus})
 -- end)
 
+
 client.connect_signal("focus", function(c) 
     c.border_width = beautiful.border_width
-    c.border_color = beautiful.border_focus 
+    c.border_color = beautiful.border_focus
+
+    local systraywidget = wibox.widget.systray()
+    systraywidget:set_screen(awful.screen.focused())
+    --c.shape = function(cr, width, height)
+        --gears.shape.arrow(cr, width, height)
+    --end
 end)
 client.connect_signal("unfocus", function(c)
-    c.border_color = beautiful.border_normal
+    c.border_width = beautiful.border_width
+    --c.border_color = beautiful.border_normal
+    c.border_color = "#00000000"
 end)
 
 -- switch to parent after closing child window
@@ -663,7 +672,6 @@ local function backham()
     end
 end
 
-beautiful.useless_gap = 2
 beautiful.gap_single_client = true
 
 -- attach to minimized state
@@ -676,4 +684,4 @@ tag.connect_signal("property::selected", backham)
 -- }}}
 
 os.execute("picom -b")
---os.execute("xrandr --output DP-2 --pos 0x0 --mode 1920x1080 --rate 165 --output HDMI-1 --pos 1920x0 --mode 1920x1080 --rate 144 --rotate left")
+os.execute("xrandr --output DisplayPort-3 --pos 0x0 --output DisplayPort-2 --mode 1920x1080 --rate 100 --pos 1680x0 --output eDP --pos 3600x0")
