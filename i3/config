@@ -242,22 +242,22 @@ client.placeholder       $overlay0 $base $text  $overlay0  $overlay0
 client.background        $base
 
 # bar
-bar {
-    colors {
-        background         $base
-        statusline         $text
-        focused_statusline $text
-        focused_separator  $base
+#bar {
+#    colors {
+#        background         $base
+#        statusline         $text
+#        focused_statusline $text
+#        focused_separator  $base
 
 # target           border bg        text
-        focused_workspace  $base  $mauve    $crust
-        active_workspace   $base  $surface2 $text
-        inactive_workspace $base  $base     $text
-        urgent_workspace   $base  $red      $crust
-    }
+#        focused_workspace  $base  $mauve    $crust
+#        active_workspace   $base  $surface2 $text
+#        inactive_workspace $base  $base     $text
+#        urgent_workspace   $base  $red      $crust
+#    }
 
-    status_command i3status
-}
+#    status_command i3status
+# }
 
 gaps outer 3px
 gaps inner 3px
@@ -265,9 +265,12 @@ gaps inner 3px
 default_border pixel 2
 default_floating_border pixel 2
 
+exec_always --no-startup-id $HOME/.config/i3/picom.sh
+exec_always --no-startup-id $HOME/.config/i3/polybar.sh
+
 #focus_follows_mouse no
 #mouse_warping none
 
-exec --no-startup-id feh --bg-scale $HOME/.config/awesome/resources/space.png
+exec_always --no-startup-id feh --bg-fill $HOME/.config/i3/wallpaper.jpg
 exec --no-startup-id picom -b
 #exec_always --no-startup-id $HOME/.config/polybar/launch_polybar.sh
