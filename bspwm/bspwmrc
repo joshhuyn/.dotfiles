@@ -2,7 +2,11 @@
 
 pgrep -x sxhkd > /dev/null || sxhkd &
 
-bspc monitor -d I II III IV V VI VII VIII IX X
+xrandr | grep " connected" | cut -d" " -f1 | while read monitor
+do
+    bspc monitor $monitor -d I II III IV V VI VII VIII IX X
+done
+
 
 bspc config border_width         2
 bspc config window_gap          12
@@ -18,5 +22,7 @@ bspc rule -a Kupfer.py focus=on
 bspc rule -a Screenkey manage=off
 
 feh --bg-fill $HOME/.dotfiles/common/images/wallpaper.jpg
-$HOME/.dotfiles/common/scripts/picom.sh
-$HOME/.dotfiles/common/scripts/polybar.sh
+$HOME/.dotfiles/common/scripts/picom.sh &
+$HOME/.dotfiles/common/scripts/polybar.sh &
+
+dunst &

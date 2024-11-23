@@ -105,9 +105,9 @@ export EDITOR='nvim'
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-if [ -z "$TMUX" ]; then
-    tmux new -As0 && exit;
-fi
+#if [ -z "$TMUX" ]; then
+#    tmux new -As0 && exit;
+#fi
 
 # alias tmux="tmux new -As0"
 
