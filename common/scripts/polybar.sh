@@ -16,5 +16,5 @@ if type "xrandr"; then
         fi
     done
 else
-    polybar &
+    polybar main &
 fi
