@@ -3,8 +3,8 @@
 #
 
 # terminal emulator
-super + Return
-	kitty
+super + {_,shift +}Return
+	{kitty, bspc rule -a \* -o state=floating sticky=on layer=above rectangle=720x360+600+26 && kitty}
 
 # program launcher
 super + @space
@@ -120,7 +120,13 @@ super + alt + shift + {h,j,k,l}
 super + {Left,Down,Up,Right}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
 
+super + {_,shift} + r
+    bspc node {@parent, @focused:/} --rotate 90
+
+
+#
 # Media keys
+#
 XF86Audio{Raise,Lower}Volume
     pactl set-sink-volume @DEFAULT_SINK@ {+,-}5%
   
