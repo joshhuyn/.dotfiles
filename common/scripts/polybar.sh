@@ -10,9 +10,17 @@ if type "xrandr"; then
         current_monitor=$(echo $line | cut -d" " -f1)
 
         if [[ $line == *"1920"* && $line == *"1080"* ]]; then
-            MONITOR=$current_monitor polybar --reload main &
+            if [[ $line == *"primary"* ]]; then
+                MONITOR=$current_monitor polybar --reload mainPrimary &
+            else
+                MONITOR=$current_monitor polybar --reload main &
+            fi
         else
-            MONITOR=$current_monitor polybar --reload fourK &
+            if [[ $line == *"primary"* ]]; then
+                MONITOR=$current_monitor polybar --reload fourKPrimary &
+            else
+                MONITOR=$current_monitor polybar --reload fourK &
+            fi
         fi
     done
 else
