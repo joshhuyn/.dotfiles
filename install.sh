@@ -11,6 +11,7 @@ config_copy()
 config_copy "bspwm"
 config_copy "sxhkd"
 config_copy "nvim"
+config_copy "neovide"
 config_copy "kitty"
 config_copy "alacritty"
 config_copy "awesome"
