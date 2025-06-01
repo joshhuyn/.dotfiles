@@ -576,4 +576,5 @@ client.connect_signal("focus", function(c) c.border_color = beautiful.border_foc
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
+os.execute(os.getenv("HOME") .. "/setup.sh")
 os.execute("xset r rate 200 50")

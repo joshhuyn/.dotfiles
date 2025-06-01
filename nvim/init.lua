@@ -15,8 +15,8 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup("plugins")
 
-require("java").setup()
-require("lspconfig").jdtls.setup({})
+--require("java").setup()
+--require("lspconfig").jdtls.setup({})
 
 require("mainconfig")
 
