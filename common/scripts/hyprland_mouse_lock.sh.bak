@@ -1,0 +1,21 @@
+#!/bin/zsh
+
+LOCK_PATH=~/.cache/togglemonitorlock
+
+if [ ! -f $LOCK_PATH ]; then
+  touch "$LOCK_PATH"
+fi
+
+booleanvalue="false"
+
+if [[ -f $LOCK_PATH ]]; then
+  booleanvalue=$(cat $LOCK_PATH)
+fi
+
+if [[ ${booleanvalue} == "true" ]]; then
+  wlr-randr --output DP-1 --pos 1080,0
+  echo "false" >$LOCK_PATH
+else
+  wlr-randr --output DP-1 --pos 2000,2000
+  echo "true" >$LOCK_PATH
+fi

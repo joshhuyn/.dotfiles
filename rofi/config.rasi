@@ -148,6 +148,8 @@ configuration {
       directories-first: true;
       sorting-method:    "name";
   }
+
+  modes: "window,drun,run,filebrowser";
 }
 //@theme "/home/josh/.local/share/rofi/themes/rounded-red-dark.rasi"
 //@theme "/usr/share/rofi/themes/Monokai.rasi"

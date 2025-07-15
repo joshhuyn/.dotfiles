@@ -2,12 +2,16 @@
 # wm independent hotkeys
 #
 
+super + t
+  kitty
+
 # terminal emulator
-super + {_,shift +}Return
-	{kitty, bspc rule -a \* -o state=floating sticky=on layer=above rectangle=720x360+600+26 && kitty}
+# super + {shift +}Return
+	# {bspc rule -a \* -o state=floating sticky=on layer=above rectangle=720x360+600+26 && kitty}
 
 # program launcher
-super + @space
+#super + @space
+super + d
 	rofi -show drun
 
 # make sxhkd reload its configuration files:
@@ -23,7 +27,7 @@ super + alt + {q,r}
 	bspc {quit,wm -r}
 
 # close and kill
-super + {_,shift + }w
+super + {_,shift + }q
 	bspc node -{c,k}
 
 # alternate between the tiled and monocle layout
@@ -43,7 +47,7 @@ super + g
 #
 
 # set the window state
-super + {t,shift + t,s,f}
+super + {e,shift + e,s,f}
 	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
 
 # set the node flags
