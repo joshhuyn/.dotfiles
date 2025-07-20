@@ -3,7 +3,7 @@
 #
 
 super + t
-  kitty
+  alacritty
 
 # terminal emulator
 # super + {shift +}Return
