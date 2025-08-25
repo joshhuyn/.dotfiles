@@ -1,3 +1,4 @@
+local naughty = require("naughty")
 local awful = require("awful")
 local hotkeys_popup = require("awful.hotkeys_popup")
 
@@ -60,7 +61,6 @@ local function getGlobalKeys()
 
   BindNormal(globalKeys, "j", function() awful.client.focus.byidx(1) end, "focus next by index", groups.client)
   BindNormal(globalKeys, "k", function() awful.client.focus.byidx(-1) end, "focus previous by index", groups.client)
-  BindNormal(globalKeys, "w", function() mymainmenu:show() end, "show main menu", groups.awesome)
 
   -- Layout manipulation
   BindShift(globalKeys, "j", function() awful.client.swap.byidx(1) end, "swap with next client by index", groups.client)
@@ -174,6 +174,21 @@ local function getClientKeys()
     c.fullscreen = not c.fullscreen; c:raise()
   end, "toggle fullscreen", groups.client)
 
+  BindNormal(clientKeys, "e", function(c) 
+    awful.screen.connect_for_each_screen(function(s)
+      --s.mytasklist.visible = not s.mytasklist.visible
+      naughty.notify( {text = tostring(s.appwindow.hidden)})
+
+      if s.appwindow.use_screen then
+        s.appwindow:struts(s.appwindow.originalStruts)
+        s.appwindow.use_screen = false
+      else
+        s.appwindow.originalStruts = s.appwindow:struts()
+        s.appwindow:struts ({top = 0, bottom = 0, left = 0, right = 0})
+        s.appwindow.use_screen = true
+      end
+    end)
+  end, "show/hide app bar", groups.awesome)
   BindNormal(clientKeys, "q", function(c) c:kill() end, "close", groups.client)
 
   BindControl(clientKeys, "space", awful.client.floating.toggle, "toggle floating", groups.client)

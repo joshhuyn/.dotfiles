@@ -117,54 +117,61 @@ awful.screen.connect_for_each_screen(function(s)
 		buttons = bindings.tagListButtons,
 	})
 
+  local tasklistSize = beautiful.tasklist_height
+
 	-- Create a tasklist widget
 	s.mytasklist = awful.widget.tasklist({
 		screen = s,
 		filter = awful.widget.tasklist.filter.currenttags,
 		buttons = bindings.taskListButtons,
+    style = {
+      shape = gears.shape.rounded_bar,
+    },
 		layout = {
-			spacing_widget = {
-				{
-					forced_width = 5,
-					forced_height = 24,
-					thickness = 1,
-					color = "#777777",
-					widget = wibox.widget.separator,
-				},
-				valign = "center",
-				halign = "center",
-				widget = wibox.container.place,
-			},
-			spacing = 1,
 			layout = wibox.layout.fixed.horizontal,
 		},
 		-- Notice that there is *NO* wibox.wibox prefix, it is a template,
 		-- not a widget instance.
 		widget_template = {
-			{
-				wibox.widget.base.make_widget(),
-				forced_height = 5,
-				id = "background_role",
-				widget = wibox.container.background,
-			},
-			{
-				{
-					id = "clienticon",
-					widget = awful.widget.clienticon,
-				},
-				margins = 5,
-				widget = wibox.container.margin,
-			},
-			nil,
-			create_callback = function(self, c, index, objects) --luacheck: no unused args
-				self:get_children_by_id("clienticon")[1].client = c
-			end,
+      {
+        {
+          {
+            id = "clienticon",
+            forced_height = tasklistSize / 2,
+            widget = awful.widget.clienticon,
+          },
+          halign = "center",
+          valign = "center",
+          widget = wibox.container.place,
+        },
+        margins = 0,
+        widget = wibox.container.margin,
+      },
+      {
+        margins = tasklistSize / 2 / 10,
+        widget = wibox.container.margin,
+      },
+      {
+        {
+          wibox.widget.base.make_widget(),
+          forced_height = tasklistSize / 8,
+          forced_width = tasklistSize / 8,
+          id = "background_role",
+          widget = wibox.container.background,
+        },
+        valign = "bottom",
+        halign = "center",
+        widget = wibox.container.place,
+      },
+      create_callback = function(self, c, index, objects) --luacheck: no unused args
+        self:get_children_by_id("clienticon")[1].client = c
+      end,
 			layout = wibox.layout.align.vertical,
 		},
 	})
 
-	s.appwindow = awful.wibar({ position = "bottom", ontop = true, bg = "#00000000", height = 40, screen = s })
-
+	s.appwindow = awful.wibox({ position = "bottom", ontop = false, bg = "#00000000", height = tasklistSize, screen = s })
+  s.appwindow.use_screen = false
 	s.appwindow:setup({
 		layout = wibox.layout.align.horizontal,
 		{

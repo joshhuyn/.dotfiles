@@ -30,6 +30,8 @@ theme.border_normal = "#000000"
 theme.border_focus  = "#535d6c"
 theme.border_marked = "#91231c"
 
+theme.tasklist_height = dpi(60)
+
 -- There are other variable sets
 -- overriding the default one when
 -- defined, the sets are:
