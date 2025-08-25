@@ -1,0 +1,299 @@
+local awful = require("awful")
+local hotkeys_popup = require("awful.hotkeys_popup")
+
+local groups = {
+  awesome = "awesome",
+  tag = "tag",
+  client = "client",
+  screen = "screen",
+  launcher = "launcher",
+  layout = "layout",
+}
+
+local function BindButtonEmpty(list, key, action)
+  table.insert(list, #list + 1, awful.button({}, key, action)[1])
+end
+
+local function BindButtonNormal(list, key, action)
+  table.insert(list, #list + 1, awful.button({ modkey }, key, action)[1])
+end
+
+local function BindEmpty(list, key, action, description, group)
+  table.insert(list, #list + 1, awful.key({}, key, action, { description = description, group = group })[1])
+end
+
+local function BindNormal(list, key, action, description, group)
+  table.insert(list, #list + 1, awful.key({ modkey }, key, action, { description = description, group = group })[1])
+end
+
+local function BindShift(list, key, action, description, group)
+  table.insert(
+    list,
+    #list + 1,
+    awful.key({ modkey, "Shift" }, key, action, { description = description, group = group })[1]
+  )
+end
+
+local function BindControl(list, key, action, description, group)
+  table.insert(
+    list,
+    #list + 1,
+    awful.key({ modkey, "Control" }, key, action, { description = description, group = group })[1]
+  )
+end
+
+local function BindControlShift(list, key, action, description, group)
+  table.insert(
+    list,
+    #list + 1,
+    awful.key({ modkey, "Control", "Shift" }, key, action, { description = description, group = group })[1]
+  )
+end
+
+local function getGlobalKeys()
+  local globalKeys = {}
+
+  BindNormal(globalKeys, "s", hotkeys_popup.show_help, "show help", groups.awesome)
+  BindNormal(globalKeys, "Left", awful.tag.viewprev, "view previous", groups.tag)
+  BindNormal(globalKeys, "Right", awful.tag.viewnext, "view next", groups.tag)
+  BindNormal(globalKeys, "Escape", awful.tag.history.restore, "go back", groups.tag)
+
+  BindNormal(globalKeys, "j", function() awful.client.focus.byidx(1) end, "focus next by index", groups.client)
+  BindNormal(globalKeys, "k", function() awful.client.focus.byidx(-1) end, "focus previous by index", groups.client)
+  BindNormal(globalKeys, "w", function() mymainmenu:show() end, "show main menu", groups.awesome)
+
+  -- Layout manipulation
+  BindShift(globalKeys, "j", function() awful.client.swap.byidx(1) end, "swap with next client by index", groups.client)
+  BindShift(globalKeys, "k", function() awful.client.swap.byidx(-1) end, "swap with previous client by index",
+    groups.client)
+
+  BindControl(globalKeys, "j", function() awful.screen.focus_relative(1) end, "focus the next screen", groups.screen)
+  BindControl(globalKeys, "k", function() awful.screen.focus_relative(-1) end, "focus the previous screen", groups
+  .screen)
+
+  BindNormal(globalKeys, "u", awful.client.urgent.jumpto, "jump to urgent client", groups.client)
+
+  BindNormal(globalKeys, "Tab", function()
+    awful.client.focus.history.previous()
+    if client.focus then
+      client.focus:raise()
+    end
+  end, "go back", groups.client)
+
+  -- Standard program
+  BindNormal(globalKeys, "t", function() awful.spawn(terminal) end, "open a terminal", groups.launcher)
+
+  BindControl(globalKeys, "r", awesome.restart, "reload awesome", groups.awesome)
+  BindShift(globalKeys, "q", awesome.quit, "quit awesome", groups.awesome)
+
+  BindNormal(globalKeys, "l", function() awful.tag.incmwfact(0.05) end, "increase master width factor", groups.layout)
+  BindNormal(globalKeys, "h", function() awful.tag.incmwfact(-0.05) end, "decrease master width factor", groups.layout)
+
+  BindShift(globalKeys, "h", function() awful.tag.incnmaster(1, nil, true) end, "increase the number of master clients",
+    groups.layout)
+  BindShift(globalKeys, "l", function() awful.tag.incnmaster(-1, nil, true) end, "decrease the number of master clients",
+    groups.layout)
+
+  BindControl(globalKeys, "h", function() awful.tag.incncol(1, nil, true) end, "increase the number of columns",
+    groups.layout)
+  BindControl(globalKeys, "l", function() awful.tag.incncol(-1, nil, true) end, "decrease the number of columns",
+    groups.layout)
+
+  BindNormal(globalKeys, "space", function() awful.layout.inc(1) end, "select next", groups.layout)
+  BindShift(globalKeys, "space", function() awful.layout.inc(-1) end, "select previous", groups.layout)
+
+  BindControl(globalKeys, "n", function()
+    local c = awful.client.restore()
+    -- Focus restored client
+    if c then
+      c:emit_signal("request::activate", "key.unminimize", { raise = true })
+    end
+  end, "restore minimized", groups.client)
+
+  -- Prompt
+  BindNormal(globalKeys, "r", function() os.execute("rofi -show run") end, "run prompt", groups.launcher)
+  BindNormal(globalKeys, "x", function()
+    awful.prompt.run({
+      prompt = "Run Lua code: ",
+      textbox = awful.screen.focused().mypromptbox.widget,
+      exe_callback = awful.util.eval,
+      history_path = awful.util.get_cache_dir() .. "/history_eval",
+    })
+  end, "lua execute prompt", groups.awesome)
+
+  BindNormal(globalKeys, "w", function() os.execute("rofi -show window") end, "show window switcher", groups.launcher)
+  BindNormal(globalKeys, "d", function() os.execute("rofi -show drun") end, "show the menubar", groups.launcher)
+
+  for i = 1, 9 do
+    -- View tag only.
+    BindNormal(globalKeys, "#" .. i + 9, function()
+      local screen = awful.screen.focused()
+      local tag = screen.tags[i]
+      if tag then
+        tag:view_only()
+      end
+    end, "view tag #" .. i, groups.tag)
+
+    -- Toggle tag display.
+    BindControl(globalKeys, "#" .. i + 9, function()
+      local screen = awful.screen.focused()
+      local tag = screen.tags[i]
+      if tag then
+        awful.tag.viewtoggle(tag)
+      end
+    end, "toggle tag #" .. i, groups.tag)
+
+    -- Move client to tag.
+    BindShift(globalKeys, "#" .. i + 9, function()
+      if client.focus then
+        local tag = client.focus.screen.tags[i]
+        if tag then
+          client.focus:move_to_tag(tag)
+        end
+      end
+    end, "move focused client to tag #" .. i, groups.tag)
+
+    -- Toggle tag on focused client.
+    BindControlShift(globalKeys, "#" .. i + 9, function()
+      if client.focus then
+        local tag = client.focus.screen.tags[i]
+        if tag then
+          client.focus:toggle_tag(tag)
+        end
+      end
+    end, "toggle focused client on tag #" .. i, groups.tag)
+  end
+
+  return globalKeys
+end
+
+local function getClientKeys()
+  local clientKeys = {}
+
+  BindNormal(clientKeys, "f", function(c)
+    c.fullscreen = not c.fullscreen; c:raise()
+  end, "toggle fullscreen", groups.client)
+
+  BindNormal(clientKeys, "q", function(c) c:kill() end, "close", groups.client)
+
+  BindControl(clientKeys, "space", awful.client.floating.toggle, "toggle floating", groups.client)
+  BindControl(clientKeys, "Return", function(c) c:swap(awful.client.getmaster()) end, "move to master", groups.client)
+
+  BindNormal(clientKeys, "o", function(c) c:move_to_screen() end, "move to screen", groups.client)
+  BindNormal(clientKeys, "t", function(c) c.ontop = not c.ontop end, "toggle keep on top", groups.client)
+  BindNormal(clientKeys, "n", function(c) c.minimized = true end, "minimize", groups.client)
+
+  BindNormal(clientKeys, "m", function(c)
+    c.maximized = not c.maximized; c:raise()
+  end, "(un)maximize", groups.client)
+  BindControl(clientKeys, "m", function(c)
+    c.maximized_vertical = not c.maximized_vertical; c:raise()
+  end, "(un)maximize vertically", groups.client)
+  BindShift(clientKeys, "m", function(c)
+    c.maximized_horizontal = not c.maximized_horizontal; c:raise()
+  end, "(un)maximize horizontally", groups.client)
+
+  BindEmpty(clientKeys, "XF86AudioLowerVolume", function() os.execute("pactl set-sink-volume 0 -5%") end,
+    "lower volume by 5%", groups.misc)
+  BindEmpty(clientKeys, "XF86AudioRaiseVolume", function() os.execute("pactl set-sink-volume 0 +5%") end,
+    "raise volume by 5%", groups.misc)
+  BindEmpty(clientKeys, "XF86AudioMute", function() os.execute("pactl set-sink-mute 0 toggle") end, "mute audio",
+    groups.misc)
+
+  BindEmpty(clientKeys, "XF86AudioPlay", function() os.execute("playerctl play-pause") end, "play/pause media",
+    groups.misc)
+  BindEmpty(clientKeys, "XF86AudioNext", function() os.execute("playerctl next") end, "next media entry", groups.misc)
+  BindEmpty(clientKeys, "XF86AudioPrev", function() os.execute("playerctl previous") end, "previous media entry",
+    groups.misc)
+
+  BindEmpty(clientKeys, "XF86MonBrightnessUp", function() os.execute("brightnessctl set 10%+") end,
+    "raise brightness by 10%", groups.misc)
+  BindEmpty(clientKeys, "XF86MonBrightnessDown", function() os.execute("brightnessctl set 10%-") end,
+    "lower brightness by 10%", groups.misc)
+
+  return clientKeys
+end
+
+local function getClientButtons()
+  local clientButtons = {}
+
+  BindButtonEmpty(clientButtons, 1, function(c) c:emit_signal("request::activate", "mouse_click", { raise = true }) end)
+
+  BindButtonNormal(clientButtons, 1, function(c)
+    c:emit_signal("request::activate", "mouse_click", { raise = true })
+    awful.mouse.client.move(c)
+  end)
+
+  BindButtonNormal(clientButtons, 3, function(c)
+    c:emit_signal("request::activate", "mouse_click", { raise = true })
+    awful.mouse.client.resize(c)
+  end)
+
+  return clientButtons
+end
+
+local function getRootButtons()
+  local rootButtons = {}
+
+  BindButtonEmpty(rootButtons, 3, function() mymainmenu:toggle() end)
+  BindButtonEmpty(rootButtons, 4, awful.tag.viewnext)
+  BindButtonEmpty(rootButtons, 5, awful.tag.viewprev)
+
+  return rootButtons
+end
+
+local function getTagListButtons()
+  local tagListButtons = {}
+
+  BindButtonEmpty(tagListButtons, 1, function(t) t:view_only() end)
+  BindButtonEmpty(tagListButtons, 3, awful.tag.viewtoggle)
+  BindButtonEmpty(tagListButtons, 4, function(t) awful.tag.viewnext(t.screen) end)
+  BindButtonEmpty(tagListButtons, 5, function(t) awful.tag.viewprev(t.screen) end)
+
+  BindButtonNormal(tagListButtons, 1, function(t) if client.focus then client.focus:move_to_tag(t) end end)
+  BindButtonNormal(tagListButtons, 3, function(t) if client.focus then client.focus:toggle_tag(t) end end)
+
+  return tagListButtons
+end
+
+local function getTaskListButtons()
+  local taskListButtons = {}
+
+  BindButtonEmpty(taskListButtons, 1, function(c)
+    if c == client.focus then
+      c.minimized = true
+    else
+      c:emit_signal("request::activate", "tasklist", { raise = true })
+    end
+  end)
+
+  BindButtonEmpty(taskListButtons, 3, function() awful.menu.client_list({ theme = { width = 250 } }) end)
+  BindButtonEmpty(taskListButtons, 4, function() awful.client.focus.byidx(1) end)
+  BindButtonEmpty(taskListButtons, 5, function() awful.client.focus.byidx(-1) end)
+
+  return taskListButtons
+end
+
+local function getLayoutBoxButtons()
+  local layoutBoxButtons = {}
+
+  BindButtonEmpty(layoutBoxButtons, 1, function() awful.layout.inc(1) end)
+  BindButtonEmpty(layoutBoxButtons, 3, function() awful.layout.inc(-1) end)
+  BindButtonEmpty(layoutBoxButtons, 4, function() awful.layout.inc(1) end)
+  BindButtonEmpty(layoutBoxButtons, 5, function() awful.layout.inc(-1) end)
+
+  return layoutBoxButtons
+end
+
+return {
+  globalKeys = getGlobalKeys(),
+  clientKeys = getClientKeys(),
+
+  rootButtons = getRootButtons(),
+  clientButtons = getClientButtons(),
+
+  tagListButtons = getTagListButtons(),
+  taskListButtons = getTaskListButtons(),
+
+  layoutBoxButtons = getLayoutBoxButtons()
+}
