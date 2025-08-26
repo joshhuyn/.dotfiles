@@ -114,6 +114,9 @@ awful.screen.connect_for_each_screen(function(s)
 	s.mytaglist = awful.widget.taglist({
 		screen = s,
 		filter = awful.widget.taglist.filter.all,
+    style = {
+      shape = gears.shape.circle,
+    },
 		buttons = bindings.tagListButtons,
 	})
 
@@ -170,6 +173,38 @@ awful.screen.connect_for_each_screen(function(s)
 		},
 	})
 
+  s.desktoptracker = awful.wibox({ position = "top", ontop = true, bg = "#732d1d", height = 20, stretch = true, screen = s })
+  s.desktoptracker:setup({
+      layout = wibox.layout.align.horizontal,
+    {
+      {
+        widget = wibox.container.background,
+        shape = gears.shape.rounded_rect,
+        bg = beautiful.bg_normal,
+        s.mytaglist,
+      },
+      layout = wibox.layout.fixed.horizontal,
+    },
+    {
+      {
+        widget = wibox.container.background,
+        shape = gears.shape.rounded_rect,
+        bg = "#FFFFFF",
+        wibox.container.place(mytextclock),
+      },
+      layout = wibox.layout.fixed.horizontal,
+    },
+    {
+      {
+        widget = wibox.container.background,
+        shape = gears.shape.rounded_rect,
+        bg = "#FFFFFF",
+        wibox.container.place(mytextclock),
+      },
+      layout = wibox.layout.fixed.horizontal,
+    },
+  })
+
 	s.appwindow = awful.wibox({ position = "bottom", ontop = false, bg = "#00000000", height = tasklistSize, screen = s })
   s.appwindow.use_screen = false
 	s.appwindow:setup({
@@ -192,7 +227,12 @@ awful.screen.connect_for_each_screen(function(s)
 		{ -- Left widgets
 			layout = wibox.layout.fixed.horizontal,
 			mylauncher,
-			s.mytaglist,
+      {
+        widget = wibox.container.background,
+        shape = gears.shape.rounded_rect,
+        bg = "#FFFFFF",
+        s.mytaglist,
+      },
 			s.mypromptbox,
 		},
 		{ -- Middle widget
