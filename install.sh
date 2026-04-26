@@ -1,22 +1,18 @@
 #!/bin/bash
 
-mkdir $HOME/.config
+if [ ! -d $HOME/.config ]; then
+  mkdir $HOME/.config
+fi
 
-config_copy()
-{
-	rm -rf $HOME/.config/$1
-	ln -s $HOME/.dotfiles/$1 $HOME/.config/$1
-}
+for x in configs/*; do
+  APP_CONFIG=$(echo "$x" | sed "s/^configs\///")
 
-config_copy "bspwm"
-config_copy "sxhkd"
-config_copy "nvim"
-config_copy "neovide"
-config_copy "kitty"
-config_copy "alacritty"
-config_copy "awesome"
-config_copy "i3"
-config_copy "i3status"
-config_copy "picom"
-config_copy "rofi"
-config_copy "polybar"
+  TARGET_DIR=$HOME/.config/$APP_CONFIG
+
+  if [ -d $TARGET_DIR ]; then
+    mv $TARGET_DIR $TARGET_DIR.bak
+  fi
+
+  ln -s $PWD/$x $TARGET_DIR
+done
+
