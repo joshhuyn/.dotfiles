@@ -174,6 +174,28 @@ local function getClientKeys()
     c.fullscreen = not c.fullscreen; c:raise()
   end, "toggle fullscreen", groups.client)
 
+
+CURRENT_LAYOUT="US"
+CURRENT_VARIANT="NONE"
+  BindControl(clientKeys, "p", function()
+    if CURRENT_VARIANT == "NONE" then
+      os.execute("setxkbmap -variant 'colemak'")
+      CURRENT_VARIANT = "colemak"
+    else
+      os.execute("setxkbmap -variant ''")
+      CURRENT_VARIANT = "NONE"
+    end
+  end)
+  BindNormal(clientKeys, "p", function()
+    if CURRENT_LAYOUT == "US" then
+      os.execute("setxkbmap de")
+      CURRENT_LAYOUT = "DE"
+    else
+      os.execute("setxkbmap us")
+      CURRENT_LAYOUT = "US"
+    end
+  end)
+
   BindNormal(clientKeys, "e", function(c) 
     awful.screen.connect_for_each_screen(function(s)
       --s.mytasklist.visible = not s.mytasklist.visible

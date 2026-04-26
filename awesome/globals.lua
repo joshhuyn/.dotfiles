@@ -3,6 +3,9 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local hotkeys_popup = require("awful.hotkeys_popup")
 
+CURRENT_LAYOUT="US"
+CURRENT_VARIANT="NONE"
+
 terminal = "alacritty"
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor

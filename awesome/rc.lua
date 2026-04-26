@@ -173,37 +173,37 @@ awful.screen.connect_for_each_screen(function(s)
 		},
 	})
 
-  s.desktoptracker = awful.wibox({ position = "top", ontop = true, bg = "#732d1d", height = 20, stretch = true, screen = s })
-  s.desktoptracker:setup({
-      layout = wibox.layout.align.horizontal,
-    {
-      {
-        widget = wibox.container.background,
-        shape = gears.shape.rounded_rect,
-        bg = beautiful.bg_normal,
-        s.mytaglist,
-      },
-      layout = wibox.layout.fixed.horizontal,
-    },
-    {
-      {
-        widget = wibox.container.background,
-        shape = gears.shape.rounded_rect,
-        bg = "#FFFFFF",
-        wibox.container.place(mytextclock),
-      },
-      layout = wibox.layout.fixed.horizontal,
-    },
-    {
-      {
-        widget = wibox.container.background,
-        shape = gears.shape.rounded_rect,
-        bg = "#FFFFFF",
-        wibox.container.place(mytextclock),
-      },
-      layout = wibox.layout.fixed.horizontal,
-    },
-  })
+--  s.desktoptracker = awful.wibox({ position = "top", ontop = true, bg = "#732d1d", height = 20, stretch = true, screen = s })
+--  s.desktoptracker:setup({
+--      layout = wibox.layout.align.horizontal,
+--    {
+--      {
+--        widget = wibox.container.background,
+--        shape = gears.shape.rounded_rect,
+--        bg = beautiful.bg_normal,
+--        s.mytaglist,
+--      },
+--      layout = wibox.layout.fixed.horizontal,
+--    },
+--    {
+--      {
+--        widget = wibox.container.background,
+--        shape = gears.shape.rounded_rect,
+--        bg = "#FFFFFF",
+--        wibox.container.place(mytextclock),
+--      },
+--      layout = wibox.layout.fixed.horizontal,
+--    },
+--    {
+--      {
+--        widget = wibox.container.background,
+--        shape = gears.shape.rounded_rect,
+--        bg = "#FFFFFF",
+--        wibox.container.place(mytextclock),
+--      },
+--      layout = wibox.layout.fixed.horizontal,
+--    },
+--  })
 
 	s.appwindow = awful.wibox({ position = "bottom", ontop = false, bg = "#00000000", height = tasklistSize, screen = s })
   s.appwindow.use_screen = false

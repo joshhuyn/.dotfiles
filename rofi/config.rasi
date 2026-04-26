@@ -153,4 +153,6 @@ configuration {
 }
 //@theme "/home/josh/.local/share/rofi/themes/rounded-red-dark.rasi"
 //@theme "/usr/share/rofi/themes/Monokai.rasi"
-@theme "/usr/share/rofi/themes/android_notification.rasi"
+//@theme "/usr/share/rofi/themes/android_notification.rasi"
+
+@theme "/usr/share/rofi/themes/Monokai.rasi"
