@@ -20,7 +20,9 @@ return {
 			local configuredLsps = {
 				"lua_ls",
 				"terraformls",
-				"ts_ls"
+				"nxls",
+				"ts_ls",
+				"bashls"
 			}
 
 			for _, configuredLsp in ipairs(configuredLsps) do

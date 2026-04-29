@@ -3,9 +3,9 @@ size = 16.0
 
 [general]
 import = [
-    "~/.config/alacritty/themes/gruvbox_dark.toml"
+    "~/.config/alacritty/themes/catppuccin_mocha.toml"
 ]
 
 [window]
-opacity = 0.5
+opacity = 0.90
 blur = true

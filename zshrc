@@ -35,6 +35,9 @@ export MANPAGER='nvim +Man!'
 [ -x "$(command -v thefuck)" ] && eval $(thefuck --alias)
 
 
+[ -d "$HOME/.sdkman/candidates/java/current" ] && export JAVA_HOME="$HOME/.sdkman/candidates/java/current"
+[ -d "$HOME/.sdkman/candidates/maven/current" ] && alias mvn="$HOME/.sdkman/candidates/maven/current/bin/mvn"
+
 #lazy load sdkman
 sdk() {
 	if [ -d "$HOME/.sdkman" ]; then
