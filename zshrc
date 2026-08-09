@@ -1,3 +1,4 @@
+
 if [ -d "$HOME/.oh-my-zsh" ]; then
 	export ZSH="$HOME/.oh-my-zsh"
 
@@ -11,46 +12,60 @@ if [ -d "$HOME/.oh-my-zsh" ]; then
 	export FZF_BASE=/usr/bin/fzf
 
 	source $ZSH/oh-my-zsh.sh
+    # rm -f ~/.zcompdump* ~/.oh-my-zsh/cache/.zcompdump*
+
+    # source $HOME/common/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+
+    precmd()
+    {
+        omz theme use $ZSH_THEME
+    }
 else;
-	function getKubeConfig {
-	  local context=$(kubectl config current-context)
+    function getKubeConfig {
+      local context=$(kubectl config current-context)
 
-	  if [[ $context == "k3s" ]]; then
-		echo "%F{green}[$context]%f"
-	  elif [[ $context == "devCluster" ]]; then
-		echo "%F{yellow}[$context]%f"
-	  elif [[ $context == "prodCluster" ]]; then
-		echo "%F{red}[$context]%f"
-	  else
-		echo $context
-	  fi
-	}
+      if [[ $context == "k3s" ]]; then
+        echo "%F{green}[$context]%f"
+      elif [[ $context == "devCluster" ]]; then
+        echo "%F{yellow}[$context]%f"
+      elif [[ $context == "prodCluster" ]]; then
+        echo "%F{red}[$context]%f"
+      else
+        echo $context
+      fi
+    }
 
-	function virtualenv_prompt_info(){
-	  [[ -n ${VIRTUAL_ENV} ]] || return
-	  echo "(${VIRTUAL_ENV:t:gs/%/%%}) "
-	}
+    function virtualenv_prompt_info(){
+      [[ -n ${VIRTUAL_ENV} ]] || return
+      echo "(${VIRTUAL_ENV:t:gs/%/%%}) "
+    }
 
-	export VIRTUAL_ENV_DISABLE_PROMPT=1
+    export VIRTUAL_ENV_DISABLE_PROMPT=1
 
-	autoload -Uz vcs_info
-	precmd() { vcs_info }
+    autoload -Uz vcs_info
+    precmd() { vcs_info }
 
-	zstyle ':vcs_info:git:*' formats '%b'
-	setopt PROMPT_SUBST
+    zstyle ':vcs_info:git:*' formats '%b'
+    setopt PROMPT_SUBST
 
-	PROMPT='╭─%F{yellow}%M%f $(getKubeConfig) %F{blue}%~%f %F{red}<${vcs_info_msg_0_}> %f
-	╰─ $(virtualenv_prompt_info)'
-	RPROMPT="%? %F{green}%*%f"
+    # PROMPT='╭─%F{yellow}%M%f $(getKubeConfig) %F{blue}%~%f %F{red}<${vcs_info_msg_0_}> %f
+    # ╰─ $(virtualenv_prompt_info)'
+    # RPROMPT="%? %F{green}%*%f"
+
+    PROMPT='╭─%F{yellow}%M%f $(getKubeConfig) %F{blue}%~%f %F{red}<${vcs_info_msg_0_}> %f
+╰─ $(virtualenv_prompt_info)'
+    RPROMPT="%? %F{green}%*%f"
 fi
+
 
 [ -z "$TMUX"  ] && { tmux attach || exec tmux new-session && exit;}
 
-### Environment Variables ###
 
 alias ls="ls --color=auto"
 alias k="kubectl"
 alias h="helm"
+
+### Environment Variables ###
 
 export GROFF_NO_SGR=1
 
@@ -80,4 +95,26 @@ sdk() {
 
 		sdk
 	fi
+}
+
+
+proxy_claude() {
+    if [[ ! -d ./.git ]]; then
+        echo "not a git project!"
+        return
+    fi
+
+    allowed_remotes=(
+        "git@gitlab.ivfp.de:ivfp/Atlas.git" 
+        "git@gitlab.ivfp.de:ivfp/Fairgleichen.git"
+    )
+
+    current_remote=$(git remote get-url origin)
+
+    if printf '%s\0' "${allowed_remotes[@]}" | grep -Fxz "${current_remote}" >/dev/null;
+    then
+        claude
+    else
+        echo "remote ${remote} is not allowed!"
+    fi
 }
