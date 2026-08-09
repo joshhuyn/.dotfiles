@@ -1,9 +1,12 @@
---# Hyprland Configuration
---# https://wiki.hypr.land/Configuring/
+require("globals.globals")
+require("per-device/variables")
 
---# ==================
---# MONITOR CONFIG
---# ==================
+-- ==================
+-- MONITOR CONFIG
+-- ==================
+
+hl.on("window.active", function()
+end)
 
 hl.monitor({
     output   = "",
@@ -12,32 +15,17 @@ hl.monitor({
     scale    = "auto",
 })
 
-hl.monitor({ output = "DP-4", mode = "1920x1080@60", position = "0x0", scale = 1 })
-hl.monitor({ output = "DP-3", mode = "1920x1080@60", position = "1920x0", scale = 1 })
-hl.monitor({ output = "eDP-1", mode = "1920x1080@60", position = "3840x0", scale = 1 })
+for _, monitor in ipairs(MONITORS) do
+    hl.monitor({ output = monitor.output, mode = monitor.mode, position = monitor.position, scale = monitor.scale })
 
-for i = 1,10 do
-    hl.workspace_rule({ workspace = i, monitor = "DP-3" })
+    for i = monitor.minWorkspace,monitor.maxWorkspace do
+        hl.workspace_rule({ workspace = i, monitor = monitor.output })
+    end
 end
 
-for i = 11,20 do
-    hl.workspace_rule({ workspace = i, monitor = "DP-4" })
-end
-
-for i = 21,30 do
-    hl.workspace_rule({ workspace = i, monitor = "eDP-1" })
-end
-
-
--- ### HOME OFFICE ###
--- #monitor=eDP-1, off
--- # monitor=DP-3, 1920x1080@60, 4480x0, 1
--- # monitor=DP-4, 3840x2160@60, 0x0, 2
--- # monitor=DP-5, 2560x1440@60, 1920x0, 1
-
---# ==================
---# ENVIRONMENT VARS
---# ==================
+-- ==================
+-- ENVIRONMENT VARS
+-- ==================
 
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 hl.env("QT_QPA_PLATFORMTHEME_QT6", "gtk3")
@@ -56,12 +44,19 @@ hl.env("XDG_SESSION_DESKTOP", "Hyprland")
 -- STARTUP APPS
 -- ==================
 hl.on("hyprland.start", function ()
-  hl.exec_cmd("bash -c 'wl-paste --watch cliphist store &'")
-  hl.exec_cmd("/usr/lib/mate-polkit/polkit-mate-authentication-agent-1")
-  hl.exec_cmd("dms run")
-  hl.exec_cmd("vicinae server &")
-  hl.exec_cmd("kdeconnectd")
-  hl.exec_cmd("xdg-settings set default-web-browser vivaldi_vivaldi-stable.desktop ")
+    hl.exec_cmd("bash -c 'wl-paste --watch cliphist store &'")
+    hl.exec_cmd("/usr/lib/mate-polkit/polkit-mate-authentication-agent-1")
+    hl.exec_cmd("vicinae server &")
+    hl.exec_cmd("kdeconnectd")
+    hl.exec_cmd("xdg-settings set default-web-browser vivaldi_vivaldi-stable.desktop ")
+
+    if CURRENT_UI == QuickshellUI.DMS 
+    then
+      hl.exec_cmd("dms run")
+    elseif CURRENT_UI == QuickshellUI.NOCTALIA 
+    then
+        hl.exec_cmd("qs -c noctalia-shell")
+    end
 end)
 
 
@@ -91,7 +86,6 @@ hl.config({
         }
     }
 })
-
 
 -- ==================
 -- GENERAL LAYOUT
@@ -197,12 +191,16 @@ local menu = "vicinae open"
 
 local mainMod = "SUPER"
 
--- dms
-hl.bind(mainMod .. " + ALT + l", hl.dsp.exec_cmd("dms ipc call lock lock"))
+if CURRENT_UI == QuickshellUI.DMS 
+then
+    -- dms
+    hl.bind(mainMod .. " + ALT + l", hl.dsp.exec_cmd("dms ipc call lock lock"))
+elseif CURRENT_UI == QuickshellUI.NOCTALIA 
+then
+    -- noctalia
+    hl.bind(mainMod .. " + ALT + l", hl.dsp.exec_cmd("qs -c noctalia-shell ipc call lockScreen lock"))
+end
 
-
-
-hl.bind(mainMod .. " + O", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
@@ -211,12 +209,9 @@ hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(menu))
 
 hl.bind(mainMod .. " + P", hl.dsp.exec_cmd("hyprshot -m region --clipboard-only"))
 
--- bind = $mainMod, F, fullscreen, 1
--- bind = $mainMod SHIFT, F, fullscreen, 0
---
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ internal = 1 }))
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen({ internal = 2 }))
---
+
 hl.bind(mainMod .. " + ALT + F", hl.dsp.window.float({ action = "toggle" }))
 
 hl.bind(mainMod .. " + h", hl.dsp.focus({ direction = "left" }))
@@ -249,24 +244,19 @@ hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = tr
 hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
 
 for i = 1, 10 do
-    local key = i % 10 -- 10 maps to key 0
+    local key = i % 10
     hl.bind(mainMod .. " + " .. key,             hl.dsp.focus({ workspace = i}))
     hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
 end
 
 for i = 11, 20 do
-    local key = i % 10 -- 10 maps to key 0
+    local key = i % 10
     hl.bind(mainMod .. " + CONTROL + " .. key,             hl.dsp.focus({ workspace = i}))
     hl.bind(mainMod .. " + CONTROL + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
 end
 
 for i = 21, 30 do
-    local key = i % 10 -- 10 maps to key 0
+    local key = i % 10
     hl.bind(mainMod .. " + ALT + " .. key,             hl.dsp.focus({ workspace = i}))
     hl.bind(mainMod .. " + ALT + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
 end
-
--- hl.bind(mainMod .. " + period", hl.dsp.layout("move +col"))
--- hl.bind(mainMod .. " + comma", hl.dsp.layout("swapcol l"))
-
--- source = "./dms/colors.conf"
