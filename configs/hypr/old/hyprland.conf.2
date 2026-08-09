@@ -1,0 +1,296 @@
+# Hyprland Configuration
+# https://wiki.hypr.land/Configuring/
+
+# ==================
+# MONITOR CONFIG
+# ==================
+monitor=,preferred,auto,auto
+
+### OFFICE ###
+monitor=DP-4, 1920x1080@60, 0x0, 1
+monitor=DP-3, 1920x1080@60, 1920x0, 1
+monitor=eDP-1, 1920x1080@60, 3840x0, 1
+
+workspace=1,monitor:DP-3
+workspace=2,monitor:DP-3
+workspace=3,monitor:DP-3
+workspace=4,monitor:DP-3
+workspace=5,monitor:DP-3
+workspace=6,monitor:DP-3
+workspace=7,monitor:DP-3
+workspace=8,monitor:DP-3
+workspace=9,monitor:DP-3
+workspace=10,monitor:DP-3
+
+workspace=11,monitor:DP-4
+workspace=12,monitor:DP-4
+workspace=13,monitor:DP-4
+workspace=14,monitor:DP-4
+workspace=15,monitor:DP-4
+workspace=16,monitor:DP-4
+workspace=17,monitor:DP-4
+workspace=18,monitor:DP-4
+workspace=19,monitor:DP-4
+workspace=20,monitor:DP-4
+
+workspace=21,monitor:eDP-1
+workspace=22,monitor:eDP-1
+workspace=23,monitor:eDP-1
+workspace=24,monitor:eDP-1
+workspace=25,monitor:eDP-1
+workspace=26,monitor:eDP-1
+workspace=27,monitor:eDP-1
+workspace=28,monitor:eDP-1
+workspace=29,monitor:eDP-1
+workspace=30,monitor:eDP-1
+
+
+### HOME OFFICE ###
+#monitor=eDP-1, off
+# monitor=DP-3, 1920x1080@60, 4480x0, 1
+# monitor=DP-4, 3840x2160@60, 0x0, 2
+# monitor=DP-5, 2560x1440@60, 1920x0, 1
+
+# ==================
+# ENVIRONMENT VARS
+# ==================
+env = QT_QPA_PLATFORM,wayland
+env = ELECTRON_OZONE_PLATFORM_HINT,auto
+env = QT_QPA_PLATFORMTHEME,gtk3
+env = QT_QPA_PLATFORMTHEME_QT6,gtk3
+env = TERMINAL,alacritty
+
+# ==================
+# STARTUP APPS
+# ==================
+exec-once = bash -c "wl-paste --watch cliphist store &"
+exec-once = /usr/lib/mate-polkit/polkit-mate-authentication-agent-1
+# exec-once = qs -c noctalia-shell
+exec-once = dms run
+exec-once = vicinae server &
+
+exec-once = kdeconnectd
+
+exec-once = xdg-settings set default-web-browser vivaldi_vivaldi-stable.desktop 
+
+# ==================
+# INPUT CONFIG
+# ==================
+input {
+    kb_model =
+    kb_rules =
+
+    repeat_rate = 50
+    repeat_delay = 200
+
+    follow_mouse = 1
+
+    force_no_accel=true
+    sensitivity = 0
+    accel_profile = "flat"
+
+    kb_layout = us,de
+    kb_variant = ,
+    kb_options = grp:alts_toggle
+
+    touchpad {
+        natural_scroll = false
+    }
+}
+
+# ==================
+# GENERAL LAYOUT
+# ==================
+general {
+    gaps_in = 2.5
+    gaps_out = 5
+    border_size = 2
+
+    col.active_border = rgba(BD93F9aa)
+    col.inactive_border = rgba(595959aa)
+
+    resize_on_border = false
+
+    allow_tearing = false
+
+    # layout = dwindle
+    layout = scrolling
+}
+
+# ==================
+# DECORATION
+# ==================
+decoration {
+    rounding = 5
+
+    active_opacity = 1.0
+    inactive_opacity = 1.0
+    blur {
+        enabled = true
+        size = 3
+        passes = 1
+        
+        vibrancy = 0.1696
+    }
+}
+
+# ==================
+# ANIMATIONS
+# ==================
+animations {
+    enabled = true
+
+    animation = windowsIn, 1, 3, default
+    animation = windowsOut, 1, 3, default
+    animation = workspaces, 5, 5, default
+    animation = windowsMove, 1, 4, default
+    animation = fade, 1, 3, default
+    animation = border, 1, 3, default
+}
+
+# ==================
+# LAYOUTS
+# ==================
+dwindle {
+    preserve_split = true
+}
+
+master {
+    mfact = 0.5
+}
+
+# ==================
+# MISC
+# ==================
+misc {
+    disable_hyprland_logo = true
+    disable_splash_rendering = true
+    vrr = 1
+}
+
+# ==================
+# KEYBINDINGS
+# ==================
+
+$terminal = alacritty
+$fileManager = dolphin
+$menu = vicinae open
+
+$mainMod = SUPER
+
+### noctalia-shell ###
+
+# bind = SUPER, space, exec, qs -c noctalia-shell ipc call launcher toggle
+# bind = SUPER ALT, l, exec, qs -c noctalia-shell ipc call lockScreen lock
+
+### dms ###
+bind = SUPER ALT, l, exec, dms ipc call lock
+
+bind = $mainMod, T, exec, $terminal
+bind = $mainMod, Q, killactive,
+bind = $mainMod, M, exit,
+bind = $mainMod, E, exec, $fileManager
+bind = $mainMod, D, exec, $menu
+
+bind = $mainMod ALT, L, exec, dms ipc call lock lock
+
+bind = $mainMod, F, fullscreen, 1
+bind = $mainMod SHIFT, F, fullscreen, 0
+bind = $mainMod ALT, F, togglefloating,
+
+bind = $mainMod, h, movefocus, l
+bind = $mainMod, l, movefocus, r
+bind = $mainMod, k, movefocus, u
+bind = $mainMod, j, movefocus, d
+
+# scratchpad
+bind = $mainMod, S, togglespecialworkspace, magic
+bind = $mainMod SHIFT, S, movetoworkspace, special:magic
+
+bind = $mainMod, mouse_down, workspace, e+1
+bind = $mainMod, mouse_up, workspace, e-1
+
+bindm = $mainMod, mouse:272, movewindow
+bindm = $mainMod, mouse:273, resizewindow
+
+bindel = ,XF86AudioRaiseVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindel = ,XF86AudioLowerVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindel = ,XF86MonBrightnessUp, exec, brightnessctl s 10%+
+bindel = ,XF86MonBrightnessDown, exec, brightnessctl s 10%-
+
+bindl = , XF86AudioNext, exec, playerctl next
+bindl = , XF86AudioPause, exec, playerctl play-pause
+bindl = , XF86AudioPlay, exec, playerctl play-pause
+bindl = , XF86AudioPrev, exec, playerctl previous
+
+# Switch workspaces with mainMod + [0-9]
+bind = $mainMod, 1, workspace, 1
+bind = $mainMod, 2, workspace, 2
+bind = $mainMod, 3, workspace, 3
+bind = $mainMod, 4, workspace, 4
+bind = $mainMod, 5, workspace, 5
+bind = $mainMod, 6, workspace, 6
+bind = $mainMod, 7, workspace, 7
+bind = $mainMod, 8, workspace, 8
+bind = $mainMod, 9, workspace, 9
+bind = $mainMod, 0, workspace, 10
+
+# Switch workspaces with mainMod + [0-9]
+bind = $mainMod CONTROL, 1, workspace, 11
+bind = $mainMod CONTROL, 2, workspace, 12
+bind = $mainMod CONTROL, 3, workspace, 13
+bind = $mainMod CONTROL, 4, workspace, 14
+bind = $mainMod CONTROL, 5, workspace, 15
+bind = $mainMod CONTROL, 6, workspace, 16
+bind = $mainMod CONTROL, 7, workspace, 17
+bind = $mainMod CONTROL, 8, workspace, 18
+bind = $mainMod CONTROL, 9, workspace, 19
+bind = $mainMod CONTROL, 0, workspace, 20
+
+# Switch workspaces with mainMod + [0-9]
+bind = $mainMod ALT, 1, workspace, 21
+bind = $mainMod ALT, 2, workspace, 22
+bind = $mainMod ALT, 3, workspace, 23
+bind = $mainMod ALT, 4, workspace, 24
+bind = $mainMod ALT, 5, workspace, 25
+bind = $mainMod ALT, 6, workspace, 26
+bind = $mainMod ALT, 7, workspace, 27
+bind = $mainMod ALT, 8, workspace, 28
+bind = $mainMod ALT, 9, workspace, 29
+bind = $mainMod ALT, 0, workspace, 30
+
+# Move active window to a workspace with mainMod + SHIFT + [0-9]
+bind = $mainMod SHIFT, 1, movetoworkspace, 1
+bind = $mainMod SHIFT, 2, movetoworkspace, 2
+bind = $mainMod SHIFT, 3, movetoworkspace, 3
+bind = $mainMod SHIFT, 4, movetoworkspace, 4
+bind = $mainMod SHIFT, 5, movetoworkspace, 5
+bind = $mainMod SHIFT, 6, movetoworkspace, 6
+bind = $mainMod SHIFT, 7, movetoworkspace, 7
+bind = $mainMod SHIFT, 8, movetoworkspace, 8
+bind = $mainMod SHIFT, 9, movetoworkspace, 9
+bind = $mainMod SHIFT, 0, movetoworkspace, 10
+
+bind = $mainMod SHIFT CONTROL, 1, movetoworkspace, 11
+bind = $mainMod SHIFT CONTROL, 2, movetoworkspace, 12
+bind = $mainMod SHIFT CONTROL, 3, movetoworkspace, 13
+bind = $mainMod SHIFT CONTROL, 4, movetoworkspace, 14
+bind = $mainMod SHIFT CONTROL, 5, movetoworkspace, 15
+bind = $mainMod SHIFT CONTROL, 6, movetoworkspace, 16
+bind = $mainMod SHIFT CONTROL, 7, movetoworkspace, 17
+bind = $mainMod SHIFT CONTROL, 8, movetoworkspace, 18
+bind = $mainMod SHIFT CONTROL, 9, movetoworkspace, 19
+bind = $mainMod SHIFT CONTROL, 0, movetoworkspace, 20
+
+bind = $mainMod SHIFT ALT, 1, movetoworkspace, 21
+bind = $mainMod SHIFT ALT, 2, movetoworkspace, 22
+bind = $mainMod SHIFT ALT, 3, movetoworkspace, 23
+bind = $mainMod SHIFT ALT, 4, movetoworkspace, 24
+bind = $mainMod SHIFT ALT, 5, movetoworkspace, 25
+bind = $mainMod SHIFT ALT, 6, movetoworkspace, 26
+bind = $mainMod SHIFT ALT, 7, movetoworkspace, 27
+bind = $mainMod SHIFT ALT, 8, movetoworkspace, 28
+bind = $mainMod SHIFT ALT, 9, movetoworkspace, 29
+bind = $mainMod SHIFT ALT, 0, movetoworkspace, 30
+
+source = ./dms/cursor.conf

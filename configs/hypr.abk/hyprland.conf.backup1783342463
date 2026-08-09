@@ -7,10 +7,16 @@
 # Monitors from existing configuration
 monitor=,preferred,auto,auto
 
-## OFFICE ###
+### OFFICE ###
 monitor=DP-4, 1920x1080@60, 0x0, 1
 monitor=DP-3, 1920x1080@60, 1920x0, 1
 monitor=eDP-1, 1920x1080@60, 3840x0, 1
+
+### HOME OFFICE ###
+#monitor=eDP-1, off
+# monitor=DP-3, 1920x1080@60, 4480x0, 1
+# monitor=DP-4, 3840x2160@60, 0x0, 2
+# monitor=DP-5, 2560x1440@60, 1920x0, 1
 
 # ==================
 # ENVIRONMENT VARS
@@ -28,8 +34,11 @@ exec-once = bash -c "wl-paste --watch cliphist store &"
 exec-once = /usr/lib/mate-polkit/polkit-mate-authentication-agent-1
 # exec-once = qs -c noctalia-shell
 exec-once = dms run
+exec-once = vicinae server &
 
 exec-once = kdeconnectd
+
+exec-once = xdg-settings set default-web-browser vivaldi_vivaldi-stable.desktop 
 
 # ==================
 # INPUT CONFIG
@@ -146,7 +155,8 @@ misc {
 $terminal = alacritty
 $fileManager = dolphin
 # $menu = wofi --show drun
-$menu = dms ipc call spotlight toggle
+# $menu = dms ipc call spotlight toggle
+$menu = vicinae open
 
 $mainMod = SUPER # Sets "Windows" key as main modifier
 
