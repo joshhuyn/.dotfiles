@@ -16,13 +16,39 @@ return {
     },
 
 
-	{ "hrsh7th/cmp-nvim-lsp" },
-	{ "hrsh7th/cmp-buffer" },
-	{ "hrsh7th/cmp-path" },
-	{ "hrsh7th/cmp-cmdline" },
-	{ "hrsh7th/nvim-cmp" },
-	{ "hrsh7th/cmp-vsnip" },
-	{ "hrsh7th/vim-vsnip" },
+    {
+        'saghen/blink.cmp',
+        dependencies = { 'rafamadriz/friendly-snippets' },
+
+        version = '1.*',
+
+        opts = {
+            -- All presets have the following mappings:
+            -- C-space: Open menu or open docs if already open
+            -- C-n/C-p or Up/Down: Select next/previous item
+            -- C-e: Hide menu
+            -- C-k: Toggle signature help (if signature.enabled = true)
+            --
+            -- See :h blink-cmp-config-keymap for defining your own keymap
+            keymap = { preset = 'default' },
+
+            appearance = {
+            nerd_font_variant = 'hack'
+            },
+
+            completion = { documentation = { auto_show = false } },
+
+            sources = {
+                default = { 'lsp', 'path', 'snippets', 'buffer' },
+            },
+            fuzzy = { implementation = "prefer_rust_with_warning" }
+        },
+        opts_extend = { "sources.default" }
+    },
+    {
+        'saghen/blink.indent',
+    },
+
     -- { "github/copilot.vim" },
 	{
 		'nvim-telescope/telescope.nvim', version = '*',
@@ -45,7 +71,8 @@ return {
 	{ "neovim/nvim-lspconfig",
 		config = function()
 			-- Set up lspconfig.
-			local capabilities = require('cmp_nvim_lsp').default_capabilities()
+			-- local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
 
 			local configuredLsps = {
 				"lua_ls",
@@ -60,6 +87,7 @@ return {
 			}
 
 			-- "java_language_server"
+            local capabilities = require("blink.cmp").get_lsp_capabilities()
 
 			for _, configuredLsp in ipairs(configuredLsps) do
 
