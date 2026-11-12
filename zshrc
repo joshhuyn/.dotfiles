@@ -1,13 +1,17 @@
+# [ -z "$TMUX"  ] && [ "$JOH_ENABLE_TMUX" = "true" ] && { tmux attach || exec tmux new-session && exit;}
+[ -z "$TMUX"  ] && { tmux attach || exec tmux new-session && exit;}
 
 if [ -d "$HOME/.oh-my-zsh" ]; then
 	export ZSH="$HOME/.oh-my-zsh"
 
 	ZSH_THEME="custom-bira"
 
-	plugins=(
-		fzf
-		zsh-vi-mode
-	)
+    plugins=()
+
+	# plugins=(
+	# 	fzf
+	# 	zsh-vi-mode
+	# )
 
 	export FZF_BASE=/usr/bin/fzf
 
@@ -45,6 +49,9 @@ else;
     autoload -Uz vcs_info
     precmd() { vcs_info }
 
+    autoload -Uz compinit
+    compinit
+
     zstyle ':vcs_info:git:*' formats '%b'
     setopt PROMPT_SUBST
 
@@ -57,10 +64,6 @@ else;
     RPROMPT="%? %F{green}%*%f"
 fi
 
-
-[ -z "$TMUX"  ] && { tmux attach || exec tmux new-session && exit;}
-
-
 alias ls="ls --color=auto"
 alias k="kubectl"
 alias h="helm"
@@ -70,12 +73,17 @@ alias h="helm"
 export GROFF_NO_SGR=1
 
 export EDITOR='nvim'
-export MANPAGER='nvim +Man!'
+# export MANPAGER='nvim +Man!'
 
 ## custom Path ##
 
 [ -d "$HOME/.spicetify" ] && export PATH=$PATH:$HOME/.spicetify
 [ -d "$HOME/.local/bin" ] && export PATH=$PATH:$HOME/.local/bin
+
+[ -d "/usr/local/go" ] && export PATH=$PATH:/usr/local/go/bin
+[ -d "$HOME/go" ] && export PATH=$PATH:$HOME/go/bin
+
+[ -d "$HOME/.local/share/gem/ruby/3.3.0/bin" ] && export PATH=$PATH:$HOME/.local/share/gem/ruby/3.3.0/bin
 
 [ -d "/usr/share/zsh-syntax-highlighting" ] && source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
@@ -118,3 +126,42 @@ proxy_claude() {
         echo "remote ${remote} is not allowed!"
     fi
 }
+
+alias mycli-atlas="mycli -u root Atlas -p"
+alias mycli-fg="mycli -u root Fairgleichen -p"
+alias mycli-axa="mycli -u root axa-fondsnavigator -p"
+
+# peon-ping quick controls
+alias peon="bash /home/huynh/.claude/hooks/peon-ping/peon.sh"
+[ -f /home/huynh/.claude/hooks/peon-ping/completions.bash ] && source /home/huynh/.claude/hooks/peon-ping/completions.bash
+
+echo "TODO: Fairgleichen qa auf keycloak dev umstellen"
+
+echo ""
+
+echo "TODO: openwebui und openterminal updaten"
+echo "TODO: k8s-log-viewer fertig deployen"
+echo "TODO: atlas fonds rating testen"
+echo "TODO: nginx qa ip filter"
+echo "TODO: look at ~/dev/repos/performance-optimierungen.md"
+
+
+function claude-tmp()
+{
+    echo -n "creating temp dir: "
+    mkdir /tmp/josh-claude-tmp/ 1> /dev/null 2> /dev/null
+    cd /tmp/josh-claude-tmp/
+    echo "$?"
+
+    if [ $? = 0 ]; then
+        claude
+    fi
+
+    echo -n "removing temp dir: "
+    rmdir /tmp/josh-claude-tmp/ 1> /dev/null
+    echo "$?"
+    cd -
+}
+
+# opencode
+export PATH=/home/huynh/.opencode/bin:$PATH

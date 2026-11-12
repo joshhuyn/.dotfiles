@@ -2,7 +2,14 @@ require("config.init")
 require("mason").setup()
 
 
-vim.cmd 'colorscheme gruvbox'
+vim.cmd [[
+    colorscheme monokai-pro-classic
+
+    highlight Normal guibg=none
+    highlight NonText guibg=none
+    highlight Normal ctermbg=none
+    highlight NonText ctermbg=none
+]]
 
 
 local o = vim.o

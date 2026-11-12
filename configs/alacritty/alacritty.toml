@@ -3,9 +3,9 @@ size = 16.0
 
 [general]
 import = [
-    "~/.config/alacritty/themes/gruvbox_material.toml"
+    "~/.config/alacritty/themes/monokai.toml"
 ]
 
 [window]
-opacity = 0.90
+opacity = 0.8
 blur = true
